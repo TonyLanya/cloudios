@@ -2,6 +2,7 @@ var express    = require("express");
 var login = require('./routes/loginroutes');
 var upload = require('./routes/fileroutes');
 var bodyParser = require('body-parser');
+var fs = require("fs");
 var path = require("path");
 var https = require('https');
 /*
