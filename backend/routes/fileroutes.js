@@ -559,6 +559,7 @@ exports.getappinfo = function (req, res) {
 exports.downloadapp = function (req, res) {
   platform = req.query.platform;
   console.log(req.params.applink);
+  console.log(platform);
   if (platform == 'Android') {
     connection.query('SELECT * FROM apps WHERE applinkid = ? AND platform = ?', [req.params.applink, 'Android'], function (error, results, fields) {
       if (error) {

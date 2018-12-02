@@ -42,6 +42,9 @@ class DownAppPage extends Component {
                 if (platform == 'iOS') {
                     var applink = "itms-services://?action=download-manifest&url=https://47.100.36.49:4000/api/" + this.props.match.params.applink + "?platform=iOS";
                     this.setState({ link: applink });
+                } else if (platform == 'Android') {
+                    var applink = "https://47.100.36.49:4000/api/" + this.props.match.params.applink + "?platform=iOS";
+                    this.setState({ link: applink });
                 }
                 this.setState({ link: applink });
                 console.log(this.state.appres);
@@ -112,7 +115,7 @@ class DownAppPage extends Component {
                                         <div>
                                         <QRCode value={"http://47.100.36.49:3000/"+ this.state.applink}/>
                                         </div>
-                                        { (platform.os.family == 'Android') && (
+                                        {/* { (platform.os.family == 'Android') && (
                                             (this.state.downloading) ? (
                                                 <div>
                                                     Downloading.....
@@ -121,7 +124,14 @@ class DownAppPage extends Component {
                                             <MuiThemeProvider>
                                                 <RaisedButton label="Download" primary={true} style={style} onClick={(event) => this.handleClick(event)}/>
                                             </MuiThemeProvider>
-                                        ))}
+                                        ))} */}
+                                        { (platform.os.family == 'Android') && (
+                                            <div>
+                                                { this.state.link != '' && (
+                                                <a href={this.state.link}>Download</a>
+                                                )}
+                                            </div>
+                                        )}
                                         { (platform.os.family == 'iOS') && (
                                             <div>
                                                 { this.state.link != '' && (
