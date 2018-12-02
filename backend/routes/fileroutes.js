@@ -426,6 +426,8 @@ exports.publishapp = async function (req, res) {
                         });
                       } else {
 
+                        if (appinfo.platform == 'iOS') {
+
                         var json = {
                           "items":
                             [
