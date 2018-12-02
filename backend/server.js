@@ -5,6 +5,7 @@ var bodyParser = require('body-parser');
 var fs = require("fs");
 var path = require("path");
 var https = require('https');
+var http = require('https');
 /*
 Module:multer
 multer is middleware used to handle multipart form data
@@ -45,4 +46,5 @@ router.get('/getipa/:applink', upload.downloadIPA);
 router.get('/getipaicon/:applink', upload.downloadIPAIcon);
 app.use('/api', router);
 // app.listen(4000);
-https.createServer(sslOptions, app).listen(4000)
+https.createServer(sslOptions, app).listen(4400)
+http.createServer(app).listen(4000)
