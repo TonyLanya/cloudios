@@ -1126,6 +1126,11 @@ rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
+react-native-install-apk@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-install-apk/-/react-native-install-apk-1.0.0.tgz#2a5923a61d2c0a6fdea8efaacae17ad2868abdef"
+  integrity sha1-Klkjph0sCm/eqO+qyuF60oaKve8=
+
 read@1.0.x:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/read/-/read-1.0.7.tgz#b3da19bd052431a97671d44a42634adf710b40c4"

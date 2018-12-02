@@ -5,9 +5,9 @@ import RaisedButton from 'material-ui/RaisedButton';
 var request = require('superagent');
 var QRCode = require('qrcode.react');
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+// import RNFS from 'react-native-fs';
 var platform = require('platform');
 var Axios = require('axios');
-var RNFS = require('react-native-fs');
 
 class DownAppPage extends Component {
     constructor(props) {
@@ -46,31 +46,34 @@ class DownAppPage extends Component {
             });
     }
 
-    handleClick(event) {
+    handleClick = (event) => {
         event.preventDefault();
         this.setState({ downloading: true});
         const url = `${global.baseUrl}${this.state.applink}?platform=${platform.os.family}`;
+        alert(url);
         if (platform.os.family == 'Android') {
-            const path = RNFS.DocumentDirectoryPath + '/' + this.props.match.params.applink + '.apk';
-            var download = RNFS.downloadFile({
-                fromUrl: url,
-                toFile: path,
-                progress: res => {
-                    this.setState({ progress: (res.bytesWritten / res.contentLength).toFixed(2) });
-                    console.log((res.bytesWritten / res.contentLength).toFixed(2));
-                },
-                progressDivider: 1
-            });
-            download.promise.then(result => {
-                if(result.statusCode == 200){
-                    NativeModules.InstallApk.install(filePath);
-                    this.setState({ progress: null });
-                    this.setState({ downloading: false });
-                } else {
-                    this.setState({ downloading: false });
-                }
-            });
+            // const path = RNFS.DocumentDirectoryPath + '/' + this.props.match.params.applink + '.apk';
         }
+        // if (platform.os.family == 'Android') {
+        //     const path = RNFS.DocumentDirectoryPath + '/' + this.props.match.params.applink + '.apk';
+        //     var download = RNFS.downloadFile({
+        //         fromUrl: url,
+        //         toFile: path,
+        //         progress: res => {
+        //             this.setState({ progress: (res.bytesWritten / res.contentLength).toFixed(2) });
+        //             console.log((res.bytesWritten / res.contentLength).toFixed(2));
+        //         },
+        //         progressDivider: 1
+        //     });
+        //     download.promise.then(result => {
+        //         if(result.statusCode == 200){
+        //             this.setState({ progress: null });
+        //             this.setState({ downloading: false });
+        //         } else {
+        //             this.setState({ downloading: false });
+        //         }
+        //     });
+        // }
         // window.open(`${global.baseUrl}${this.state.applink}?platform=${platform.os.family}`, "_blank");
     }
 

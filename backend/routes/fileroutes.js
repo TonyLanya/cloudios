@@ -1,6 +1,7 @@
 var fs = require("fs");
 var path = require('path');
 var writePath = 'filestored/';
+var productPath = 'ptoducts/';
 var cmd = require('node-cmd');
 var async = require('async');
 var jsonfile = require('jsonfile');
@@ -90,6 +91,7 @@ exports.analyseapk = function (req, res) {
                 "appminversion":appminversion,
                 "platform":"Android",
                 "appicon":appicon,
+                "originalname":file.originalname,
                 "created":today,
                 "modified":today
               }
@@ -101,44 +103,49 @@ exports.analyseapk = function (req, res) {
                    bundleid: bundleID
                  });
                 } else {
-                  connection.query('SELECT * FROM apps WHERE applinkid = ? AND platform = "Android"',[bundleID], (error, results, fields) => {
-                    if (results.length > 0) {
-                      fs.unlink(writePath + bundleID + ".apk", (err) => {
-                        console.log(err);
-                        fs.rename(filepath, writePath + bundleID + ".apk", (err) => {
-                          if (err){
-                            res.send({
-                              "code":400,
-                              "msg":"cannot rename",
-                                });
-                          } else {
-                            res.send({
-                              "code":200,
-                              "msg":"apk analyse sucessfully",
-                              data: apk
-                                });
-                          }
-                        });
-                      });
-                    } else {
-                      fs.unlink(writePath + bundleID + ".apk", (err) => {
-                        fs.rename(filepath, writePath + bundleID + ".apk", (err) => {
-                          if (err){
-                            res.send({
-                              "code":400,
-                              "msg":"cannot rename",
-                                });
-                          } else {
-                            res.send({
-                              "code":200,
-                              "msg":"apk analyse sucessfully",
-                              data: apk
-                                });
-                          }
-                        });
-                      });
-                    }
+                  res.send({
+                    "code": 200,
+                    "msg": "apk analyse sucessfully",
+                    data: apk
                   });
+                  // connection.query('SELECT * FROM apps WHERE applinkid = ? AND platform = "Android"',[bundleID], (error, results, fields) => {
+                  //   if (results.length > 0) {
+                  //     fs.unlink(writePath + bundleID + ".apk", (err) => {
+                  //       console.log(err);
+                  //       fs.rename(filepath, writePath + bundleID + ".apk", (err) => {
+                  //         if (err){
+                  //           res.send({
+                  //             "code":400,
+                  //             "msg":"cannot rename",
+                  //               });
+                  //         } else {
+                  //           res.send({
+                  //             "code":200,
+                  //             "msg":"apk analyse sucessfully",
+                  //             data: apk
+                  //               });
+                  //         }
+                  //       });
+                  //     });
+                  //   } else {
+                  //     fs.unlink(writePath + bundleID + ".apk", (err) => {
+                  //       fs.rename(filepath, writePath + bundleID + ".apk", (err) => {
+                  //         if (err){
+                  //           res.send({
+                  //             "code":400,
+                  //             "msg":"cannot rename",
+                  //               });
+                  //         } else {
+                  //           res.send({
+                  //             "code":200,
+                  //             "msg":"apk analyse sucessfully",
+                  //             data: apk
+                  //               });
+                  //         }
+                  //       });
+                  //     });
+                  //   }
+                  // });
                 }
               });
             }
@@ -265,31 +272,6 @@ exports.analyseios = function (req, res) {
                                 return;
                           }
                         });
-                        // if (err) {
-                        //   console.log(err);
-                        //   res.send({
-                        //     "code":400,
-                        //     "msg":"cannot remove old version",
-                        //       });
-                        //       return;
-                        // } else {
-                        //   fs.rename(filepath, writePath + bundleID + ".ipa", (err) => {
-                        //     if (err){
-                        //       res.send({
-                        //         "code":400,
-                        //         "msg":"cannot rename",
-                        //           });
-                        //           return;
-                        //     } else {
-                        //       res.send({
-                        //         "code":200,
-                        //         "msg":"ipa analyse sucessfully",
-                        //         data: ipa
-                        //           });
-                        //           return;
-                        //     }
-                        //   });
-                        // }
                       });
                     } else {
                       fs.rename(filepath, writePath + bundleID + ".ipa", (err) => {
@@ -338,7 +320,7 @@ exports.analyseios = function (req, res) {
   }
 }
 
-exports.publishapp = function (req, res) {
+exports.publishapp = async function (req, res) {
   var appinfo = req.param('appinfo');
   connection.query('SELECT * FROM apps WHERE applinkid = ? AND platform = ? AND appversionname = ?',[appinfo.applinkid, appinfo.platform, appinfo.appversionname], function (error, results, fields) {
     if (results.length > 0) {
@@ -348,9 +330,39 @@ exports.publishapp = function (req, res) {
      });
      return;
     } else {
-      connection.query('SELECT * FROM apps WHERE applinkid = ? AND platform = ?',[appinfo.applinkid, appinfo.platform], function (error, results, fields) {
+      connection.query('SELECT * FROM apps WHERE applinkid = ? AND platform = ?',[appinfo.applinkid, appinfo.platform], async function (error, results, fields) {
         if (results.length > 0) {
           if (parseFloat(results[0].appversionname) < parseFloat(appinfo.appversionname) ) {
+            const destPath = productPath + appinfo.applinkid + "/";
+            if (! await fs.existsSync(destPath)){
+              await fs.mkdirSync(destPath);
+            }
+            await fs.readFile(writePath + appinfo.originalname, (err, data) => {
+              if (err) {
+                console.log("err ocurred", err);
+                res.send({
+                  "code": "400",
+                  "msg": "error read file"
+                });
+                return;
+              }
+            });
+            const destname = '';
+            if (appinfo.platform == 'Android') {
+              destname = destPath + appinfo.applinkid + "_" + appinfo.appversionname + ".apk";
+            } else {
+              destname = destPath + appinfo.applinkid + "_" + appinfo.appversionname + ".ipa";
+            }
+            await fs.writeFile(destname, data, (err) => {
+              if (err) {
+                console.log("err ocurred", err);
+                res.send({
+                  "code": "400",
+                  "msg": "error write file"
+                });
+                return;
+              }
+            });
             connection.query('UPDATE apps SET appversionname = ? WHERE applinkid = ? AND platform = ?', [appinfo.appversionname, appinfo.applinkid, appinfo.platform], function(err, result) {
               if (err) {
                 res.send({
@@ -371,6 +383,36 @@ exports.publishapp = function (req, res) {
             });
           }
         } else {
+          const destPath = productPath + appinfo.applinkid + "/";
+          if (! await fs.existsSync(destPath)){
+            await fs.mkdirSync(destPath);
+          }
+          await fs.readFile(writePath + appinfo.originalname, (err, data) => {
+            if (err) {
+              console.log("err ocurred", err);
+              res.send({
+                "code": "400",
+                "msg": "error read file"
+              });
+              return;
+            }
+          });
+          const destname = '';
+          if (appinfo.platform == 'Android') {
+            destname = destPath + appinfo.applinkid + "_" + appinfo.appversionname + ".apk";
+          } else {
+            destname = destPath + appinfo.applinkid + "_" + appinfo.appversionname + ".ipa";
+          }
+          await fs.writeFile(destname, data, (err) => {
+            if (err) {
+              console.log("err ocurred", err);
+              res.send({
+                "code": "400",
+                "msg": "error write file"
+              });
+              return;
+            }
+          });
           connection.query('INSERT INTO apps SET ?',appinfo, function (error, results, fields) {
             if (error) {
               res.send({
