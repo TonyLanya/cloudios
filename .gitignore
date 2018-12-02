@@ -43,3 +43,5 @@ publishapp
 products
 
 package-lock.json
+
+*.pem
