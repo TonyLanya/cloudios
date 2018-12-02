@@ -312,17 +312,17 @@ exports.publishapp = async function (req, res) {
                                   [
                                   {
                                     "kind": "software-package",
-                                    "url": "http://47.100.36.49:4000/api/getipa/" + appinfo.applinkid
+                                    "url": "http://47.100.36.49:4000/" + appinfo.applinkid + "/" + appinfo.applinkid + "_" + appinfo.appversionname + ".ipa"
                                   },
                                   {
                                     "kind": "display-image",
                                     "needs-shine": true,
-                                    "url": "http://47.100.36.49:4000<span style=\"font-family: Arial, Helvetica, sans-serif;\">/api/getipaicon/" + appinfo.applinkid + "</string>"
+                                    "url": "http://47.100.36.49:4000<span style=\"font-family: Arial, Helvetica, sans-serif;\">/" + appinfo.applinkid + "/" + appinfo.applinkid + ".png" + "</string>"
                                   },
                                   {
                                     "kind": "full-size-image",
                                     "needs-shine": true,
-                                    "url": "http://47.100.36.49:4000/api/getipaicon/" + appinfo.applinkid
+                                    "url": "http://47.100.36.49:4000/" + appinfo.applinkid + "/" + appinfo.applinkid + ".png"
                                   }],
                                   "metadata":
                                   {
@@ -426,41 +426,37 @@ exports.publishapp = async function (req, res) {
                         });
                       } else {
 
-                        console.log(appinfo.platform);
-
-                        if (appinfo.platform == 'iOS') {
- 
-                          var json = {
-                            "items":
+                        var json = {
+                          "items":
+                            [
+                            {
+                              "assets":
                               [
                               {
-                                "assets":
-                                [
-                                {
-                                  "kind": "software-package",
-                                  "url": "http://47.100.36.49:4000/api/getipa/" + appinfo.applinkid
-                                },
-                                {
-                                  "kind": "display-image",
-                                  "needs-shine": true,
-                                  "url": "http://47.100.36.49:4000<span style=\"font-family: Arial, Helvetica, sans-serif;\">/api/getipaicon/" + appinfo.applinkid + "</string>"
-                                },
-                                {
-                                  "kind": "full-size-image",
-                                  "needs-shine": true,
-                                  "url": "http://47.100.36.49:4000/api/getipaicon/" + appinfo.applinkid
-                                }],
-                                "metadata":
-                                {
-                                  "bundle-identifier": appinfo.appid,
-                                  "bundle-version": appinfo.appversionname,
-                                  "kind": "software",
-                                  "subtitle": appinfo.appname,
-                                  "title": appinfo.appname
-                                }
+                                "kind": "software-package",
+                                "url": "http://47.100.36.49:4000/" + appinfo.applinkid + "/" + appinfo.applinkid + "_" + appinfo.appversionname + ".ipa"
+                              },
+                              {
+                                "kind": "display-image",
+                                "needs-shine": true,
+                                "url": "http://47.100.36.49:4000<span style=\"font-family: Arial, Helvetica, sans-serif;\">/" + appinfo.applinkid + "/" + appinfo.applinkid + ".png" + "</string>"
+                              },
+                              {
+                                "kind": "full-size-image",
+                                "needs-shine": true,
+                                "url": "http://47.100.36.49:4000/" + appinfo.applinkid + "/" + appinfo.applinkid + ".png"
+                              }],
+                              "metadata":
+                              {
+                                "bundle-identifier": appinfo.appid,
+                                "bundle-version": appinfo.appversionname,
+                                "kind": "software",
+                                "subtitle": appinfo.appname,
+                                "title": appinfo.appname
                               }
-                              ]
-                          };
+                            }
+                            ]
+                        };
                           const destplist = destPath + appinfo.applinkid + "_" + appinfo.appversionname + ".plist";
                           fs.writeFile(destplist, plist.build(json), (err) => {
                             if (err) {

@@ -2,6 +2,7 @@ var express    = require("express");
 var login = require('./routes/loginroutes');
 var upload = require('./routes/fileroutes');
 var bodyParser = require('body-parser');
+var path = require("path");
 /*
 Module:multer
 multer is middleware used to handle multipart form data
@@ -17,6 +18,7 @@ app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
+app.use(express.static(path.join(__dirname, 'products')));
 var router = express.Router();
 
 // test route
