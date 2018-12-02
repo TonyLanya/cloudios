@@ -312,17 +312,17 @@ exports.publishapp = async function (req, res) {
                                   [
                                   {
                                     "kind": "software-package",
-                                    "url": "http://47.100.36.49:4000/" + appinfo.applinkid + "/" + appinfo.applinkid + "_" + appinfo.appversionname + ".ipa"
+                                    "url": "https://47.100.36.49:4000/" + appinfo.applinkid + "/" + appinfo.applinkid + "_" + appinfo.appversionname + ".ipa"
                                   },
                                   {
                                     "kind": "display-image",
                                     "needs-shine": true,
-                                    "url": "http://47.100.36.49:4000<span style=\"font-family: Arial, Helvetica, sans-serif;\">/" + appinfo.applinkid + "/" + appinfo.applinkid + ".png" + "</string>"
+                                    "url": "https://47.100.36.49:4000<span style=\"font-family: Arial, Helvetica, sans-serif;\">/" + appinfo.applinkid + "/" + appinfo.applinkid + ".png" + "</string>"
                                   },
                                   {
                                     "kind": "full-size-image",
                                     "needs-shine": true,
-                                    "url": "http://47.100.36.49:4000/" + appinfo.applinkid + "/" + appinfo.applinkid + ".png"
+                                    "url": "https://47.100.36.49:4000/" + appinfo.applinkid + "/" + appinfo.applinkid + ".png"
                                   }],
                                   "metadata":
                                   {
@@ -436,17 +436,17 @@ exports.publishapp = async function (req, res) {
                               [
                               {
                                 "kind": "software-package",
-                                "url": "http://47.100.36.49:4000/" + appinfo.applinkid + "/" + appinfo.applinkid + "_" + appinfo.appversionname + ".ipa"
+                                "url": "https://47.100.36.49:4000/" + appinfo.applinkid + "/" + appinfo.applinkid + "_" + appinfo.appversionname + ".ipa"
                               },
                               {
                                 "kind": "display-image",
                                 "needs-shine": true,
-                                "url": "http://47.100.36.49:4000<span style=\"font-family: Arial, Helvetica, sans-serif;\">/" + appinfo.applinkid + "/" + appinfo.applinkid + ".png" + "</string>"
+                                "url": "https://47.100.36.49:4000<span style=\"font-family: Arial, Helvetica, sans-serif;\">/" + appinfo.applinkid + "/" + appinfo.applinkid + ".png" + "</string>"
                               },
                               {
                                 "kind": "full-size-image",
                                 "needs-shine": true,
-                                "url": "http://47.100.36.49:4000/" + appinfo.applinkid + "/" + appinfo.applinkid + ".png"
+                                "url": "https://47.100.36.49:4000/" + appinfo.applinkid + "/" + appinfo.applinkid + ".png"
                               }],
                               "metadata":
                               {
