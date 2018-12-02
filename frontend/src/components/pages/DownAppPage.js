@@ -46,8 +46,6 @@ class DownAppPage extends Component {
                     var applink = "http://47.100.36.49:4000/api/" + this.props.match.params.applink + "?platform=Android";
                     this.setState({ link: applink });
                 }
-                var applink = "http://47.100.36.49:4000/api/" + this.props.match.params.applink + "?platform=Android";
-                this.setState({ link: applink });
                 console.log(this.state.appres);
                 this.setState({ loading: false });
             }).catch( err => {
