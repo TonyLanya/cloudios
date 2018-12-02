@@ -46,5 +46,5 @@ router.get('/getipa/:applink', upload.downloadIPA);
 router.get('/getipaicon/:applink', upload.downloadIPAIcon);
 app.use('/api', router);
 // app.listen(4000);
-https.createServer(sslOptions, app).listen(4400)
-http.createServer(app).listen(4000)
+// https.createServer(sslOptions, app).listen(4400);
+http.createServer(app).listen(4000);
