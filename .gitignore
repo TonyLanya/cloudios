@@ -41,3 +41,5 @@ fileprint
 filestored
 publishapp
 products
+
+package-lock.json

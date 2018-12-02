@@ -20,6 +20,7 @@ class DownAppPage extends Component {
             appres: null,
             downloading: false,
             progress: null,
+            link: ''
         };
     }
 
@@ -38,6 +39,11 @@ class DownAppPage extends Component {
                     this.setState({ loading: false });
                 }
                 this.setState({ appres: res.body.data });
+                if (platform == 'iOS') {
+                    var applink = "itms-services://?action=download-manifest&url=https://47.100.36.49:4000/api/" + this.props.match.params.applink + "?platform=iOS";
+                    this.setState({ link: applink });
+                }
+                this.setState({ link: applink });
                 console.log(this.state.appres);
                 this.setState({ loading: false });
             }).catch( err => {
@@ -106,16 +112,22 @@ class DownAppPage extends Component {
                                         <div>
                                         <QRCode value={"http://47.100.36.49:3000/"+ this.state.applink}/>
                                         </div>
-                                        { (platform.os.family == 'Android' || platform.os.family == 'iOS') && (
+                                        { (platform.os.family == 'Android') && (
                                             (this.state.downloading) ? (
-                                        <MuiThemeProvider>
-                                            <RaisedButton label="Download" primary={true} style={style} onClick={(event) => this.handleClick(event)}/>
-                                        </MuiThemeProvider>) : (
+                                                <div>
+                                                    Downloading.....
+                                                    {this.state.progress}{' '}Bytes downloaded.
+                                                </div>) : (
+                                            <MuiThemeProvider>
+                                                <RaisedButton label="Download" primary={true} style={style} onClick={(event) => this.handleClick(event)}/>
+                                            </MuiThemeProvider>
+                                        ))}
+                                        { (platform.os.family == 'iOS') && (
                                             <div>
-                                                Downloading.....
-                                                {this.state.progress}{' '}Bytes downloaded.
+                                                { this.state.link != '' && (
+                                                <a href={this.state.link}>Download</a>
+                                                )}
                                             </div>
-                                        )
                                         )}
                                     </div>
                                     <h1 className="name">

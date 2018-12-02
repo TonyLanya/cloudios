@@ -1,13 +1,14 @@
 var fs = require("fs");
 var path = require('path');
 var writePath = 'filestored/';
-var productPath = 'ptoducts/';
+var productPath = 'products/';
 var cmd = require('node-cmd');
 var async = require('async');
 var jsonfile = require('jsonfile');
 var mysql = require('mysql');
 // var bcrypt = require('bcrypt');
 var jsonfile = require('jsonfile');
+var plist = require('plist');
 const PkgReader = require('reiko-parser');
 var connection = mysql.createConnection({
   host: 'localhost',
@@ -108,44 +109,6 @@ exports.analyseapk = function (req, res) {
                     "msg": "apk analyse sucessfully",
                     data: apk
                   });
-                  // connection.query('SELECT * FROM apps WHERE applinkid = ? AND platform = "Android"',[bundleID], (error, results, fields) => {
-                  //   if (results.length > 0) {
-                  //     fs.unlink(writePath + bundleID + ".apk", (err) => {
-                  //       console.log(err);
-                  //       fs.rename(filepath, writePath + bundleID + ".apk", (err) => {
-                  //         if (err){
-                  //           res.send({
-                  //             "code":400,
-                  //             "msg":"cannot rename",
-                  //               });
-                  //         } else {
-                  //           res.send({
-                  //             "code":200,
-                  //             "msg":"apk analyse sucessfully",
-                  //             data: apk
-                  //               });
-                  //         }
-                  //       });
-                  //     });
-                  //   } else {
-                  //     fs.unlink(writePath + bundleID + ".apk", (err) => {
-                  //       fs.rename(filepath, writePath + bundleID + ".apk", (err) => {
-                  //         if (err){
-                  //           res.send({
-                  //             "code":400,
-                  //             "msg":"cannot rename",
-                  //               });
-                  //         } else {
-                  //           res.send({
-                  //             "code":200,
-                  //             "msg":"apk analyse sucessfully",
-                  //             data: apk
-                  //               });
-                  //         }
-                  //       });
-                  //     });
-                  //   }
-                  // });
                 }
               });
             }
@@ -240,6 +203,7 @@ exports.analyseios = function (req, res) {
                 "appversionname":appversionname,
                 "appminversion":appminversion,
                 "platform":"iOS",
+                "originalname":file.originalname,
                 "appicon":appicon,
                 "created":today,
                 "modified":today
@@ -252,45 +216,10 @@ exports.analyseios = function (req, res) {
                    bundleid: bundleID
                  });
                 } else {
-                  connection.query('SELECT * FROM apps WHERE applinkid = ? AND platform = "iOS"',[bundleID], (error, results, fields) => {
-                    if (results.length > 0) {
-                      fs.unlink(writePath + bundleID + ".ipa", (err) =>  {
-                        console.log(err);
-                        fs.rename(filepath, writePath + bundleID + ".ipa", (err) => {
-                          if (err){
-                            res.send({
-                              "code":400,
-                              "msg":"cannot rename",
-                                });
-                                return;
-                          } else {
-                            res.send({
-                              "code":200,
-                              "msg":"ipa analyse sucessfully",
-                              data: ipa
-                                });
-                                return;
-                          }
-                        });
-                      });
-                    } else {
-                      fs.rename(filepath, writePath + bundleID + ".ipa", (err) => {
-                        if (err){
-                          res.send({
-                            "code":400,
-                            "msg":"cannot rename",
-                              });
-                              return;
-                        } else {
-                          res.send({
-                            "code":200,
-                            "msg":"ipa analyse sucessfully",
-                            data: ipa
-                              });
-                              return;
-                        }
-                      });
-                    }
+                  res.send({
+                    "code": 200,
+                    "msg": "ipa analyse sucessfully",
+                    data: ipa
                   });
                 }
               });
@@ -334,45 +263,119 @@ exports.publishapp = async function (req, res) {
         if (results.length > 0) {
           if (parseFloat(results[0].appversionname) < parseFloat(appinfo.appversionname) ) {
             const destPath = productPath + appinfo.applinkid + "/";
-            if (! await fs.existsSync(destPath)){
-              await fs.mkdirSync(destPath);
+            if (! fs.existsSync(destPath)){
+              fs.mkdirSync(destPath);
             }
-            await fs.readFile(writePath + appinfo.originalname, (err, data) => {
+            console.log(writePath + appinfo.originalname);
+            fs.readFile(writePath + appinfo.originalname, (err, data) => {
               if (err) {
                 console.log("err ocurred", err);
                 res.send({
                   "code": "400",
                   "msg": "error read file"
                 });
-                return;
               }
-            });
-            const destname = '';
-            if (appinfo.platform == 'Android') {
-              destname = destPath + appinfo.applinkid + "_" + appinfo.appversionname + ".apk";
-            } else {
-              destname = destPath + appinfo.applinkid + "_" + appinfo.appversionname + ".ipa";
-            }
-            await fs.writeFile(destname, data, (err) => {
-              if (err) {
-                console.log("err ocurred", err);
-                res.send({
-                  "code": "400",
-                  "msg": "error write file"
-                });
-                return;
-              }
-            });
-            connection.query('UPDATE apps SET appversionname = ? WHERE applinkid = ? AND platform = ?', [appinfo.appversionname, appinfo.applinkid, appinfo.platform], function(err, result) {
-              if (err) {
-                res.send({
-                  "code": "400",
-                  "msg": "error"
-                });
-              } else {
-                res.send({
-                  "code": "200",
-                  "msg": "success update version"
+              else {
+                var destname = '';
+                if (appinfo.platform == 'Android') {
+                  destname = destPath + appinfo.applinkid + "_" + appinfo.appversionname + ".apk";
+                } else {
+                  destname = destPath + appinfo.applinkid + "_" + appinfo.appversionname + ".ipa";
+                }
+                console.log(destname);
+                fs.writeFile(destname, data, (err) => {
+                  if (err) {
+                    console.log("err ocurred", err);
+                    res.send({
+                      "code": "400",
+                      "msg": "error write file"
+                    });
+                  } else {
+                    var base64Data = appinfo.appicon.replace(/^data:image\/png;base64,/, "");
+                    const desticon = destPath + appinfo.applinkid + ".png";
+                    fs.writeFile(desticon, base64Data, 'base64', (err) => {
+                        if (err) {
+                          console.log("err");
+                          res.send({
+                            "code": "400",
+                            "msg": "error write icon file"
+                          });
+                        } else {
+
+                          if (appinfo.platform == 'iOS') {
+ 
+                            var json = {
+                              "items":
+                                [
+                                {
+                                  "assets":
+                                  [
+                                  {
+                                    "kind": "software-package",
+                                    "url": "http://47.100.36.49:4000/api/getipa/" + appinfo.applinkid
+                                  },
+                                  {
+                                    "kind": "display-image",
+                                    "needs-shine": true,
+                                    "url": "http://47.100.36.49:4000<span style=\"font-family: Arial, Helvetica, sans-serif;\">/api/getipaicon/" + appinfo.applinkid + "</string>"
+                                  },
+                                  {
+                                    "kind": "full-size-image",
+                                    "needs-shine": true,
+                                    "url": "http://47.100.36.49:4000/api/getipaicon/" + appinfo.applinkid
+                                  }],
+                                  "metadata":
+                                  {
+                                    "bundle-identifier": appinfo.appid,
+                                    "bundle-version": appinfo.appversionname,
+                                    "kind": "software",
+                                    "subtitle": appinfo.appname,
+                                    "title": appinfo.appname
+                                  }
+                                }
+                                ]
+                            };
+                            fs.writeFile('test.plist', plist.build(json), (err) => {
+                              if (err) {
+                                console.log(err);
+                                res.send({
+                                  "code": "400",
+                                  "msg": "error"
+                                });
+                              } else {
+                                connection.query('UPDATE apps SET appversionname = ? WHERE applinkid = ? AND platform = ?', [appinfo.appversionname, appinfo.applinkid, appinfo.platform], function(err, result) {
+                                  if (err) {
+                                    res.send({
+                                      "code": "400",
+                                      "msg": "error"
+                                    });
+                                  } else {
+                                    res.send({
+                                      "code": "200",
+                                      "msg": "success update version"
+                                    });
+                                  }
+                                });
+                              }
+                            });
+                          } else {
+                            connection.query('UPDATE apps SET appversionname = ? WHERE applinkid = ? AND platform = ?', [appinfo.appversionname, appinfo.applinkid, appinfo.platform], function(err, result) {
+                              if (err) {
+                                res.send({
+                                  "code": "400",
+                                  "msg": "error"
+                                });
+                              } else {
+                                res.send({
+                                  "code": "200",
+                                  "msg": "success update version"
+                                });
+                              }
+                            });
+                          }
+                        }
+                      });
+                  }
                 });
               }
             });
@@ -384,45 +387,126 @@ exports.publishapp = async function (req, res) {
           }
         } else {
           const destPath = productPath + appinfo.applinkid + "/";
-          if (! await fs.existsSync(destPath)){
-            await fs.mkdirSync(destPath);
+          if (! fs.existsSync(destPath)){
+            fs.mkdirSync(destPath);
           }
-          await fs.readFile(writePath + appinfo.originalname, (err, data) => {
+          console.log(writePath + appinfo.originalname);
+          fs.readFile(writePath + appinfo.originalname, (err, data) => {
             if (err) {
               console.log("err ocurred", err);
               res.send({
                 "code": "400",
                 "msg": "error read file"
               });
-              return;
             }
-          });
-          const destname = '';
-          if (appinfo.platform == 'Android') {
-            destname = destPath + appinfo.applinkid + "_" + appinfo.appversionname + ".apk";
-          } else {
-            destname = destPath + appinfo.applinkid + "_" + appinfo.appversionname + ".ipa";
-          }
-          await fs.writeFile(destname, data, (err) => {
-            if (err) {
-              console.log("err ocurred", err);
-              res.send({
-                "code": "400",
-                "msg": "error write file"
-              });
-              return;
-            }
-          });
-          connection.query('INSERT INTO apps SET ?',appinfo, function (error, results, fields) {
-            if (error) {
-              res.send({
-                "code": "400",
-                "msg": "error"
-              });
-            } else {
-              res.send({
-                "code": "200",
-                "msg": "success publish"
+            else {
+              var destname = '';
+              if (appinfo.platform == 'Android') {
+                destname = destPath + appinfo.applinkid + "_" + appinfo.appversionname + ".apk";
+              } else {
+                destname = destPath + appinfo.applinkid + "_" + appinfo.appversionname + ".ipa";
+              }
+              console.log(destname);
+              fs.writeFile(destname, data, (err) => {
+                if (err) {
+                  console.log("err ocurred", err);
+                  res.send({
+                    "code": "400",
+                    "msg": "error write file"
+                  });
+                } else {
+                  var base64Data = appinfo.appicon.replace(/^data:image\/png;base64,/, "");
+                  const desticon = destPath + appinfo.applinkid + ".png";
+                  fs.writeFile(desticon, base64Data, 'base64', function(err) {
+                      if (err) {
+                        console.log("err");
+                        res.send({
+                          "code": "400",
+                          "msg": "error write icon file"
+                        });
+                      } else {
+
+                        console.log(appinfo.platform);
+
+                        if (appinfo.platform == 'iOS') {
+ 
+                          var json = {
+                            "items":
+                              [
+                              {
+                                "assets":
+                                [
+                                {
+                                  "kind": "software-package",
+                                  "url": "http://47.100.36.49:4000/api/getipa/" + appinfo.applinkid
+                                },
+                                {
+                                  "kind": "display-image",
+                                  "needs-shine": true,
+                                  "url": "http://47.100.36.49:4000<span style=\"font-family: Arial, Helvetica, sans-serif;\">/api/getipaicon/" + appinfo.applinkid + "</string>"
+                                },
+                                {
+                                  "kind": "full-size-image",
+                                  "needs-shine": true,
+                                  "url": "http://47.100.36.49:4000/api/getipaicon/" + appinfo.applinkid
+                                }],
+                                "metadata":
+                                {
+                                  "bundle-identifier": appinfo.appid,
+                                  "bundle-version": appinfo.appversionname,
+                                  "kind": "software",
+                                  "subtitle": appinfo.appname,
+                                  "title": appinfo.appname
+                                }
+                              }
+                              ]
+                          };
+                          const destplist = destPath + appinfo.applinkid + "_" + appinfo.appversionname + ".plist";
+                          fs.writeFile(destplist, plist.build(json), (err) => {
+                            if (err) {
+                              console.log(err);
+                              res.send({
+                                "code": "400",
+                                "msg": "error"
+                              });
+                            } else {
+                              delete appinfo.originalname;
+                              connection.query('INSERT INTO apps SET ?',appinfo, function (error, results, fields) {
+                                if (error) {
+                                  console.log(error);
+                                  res.send({
+                                    "code": "400",
+                                    "msg": "error"
+                                  });
+                                } else {
+                                  res.send({
+                                    "code": "200",
+                                    "msg": "success publish"
+                                  });
+                                }
+                              });
+                            }
+                          });
+                        } else {
+                          delete appinfo.originalname;
+                          connection.query('INSERT INTO apps SET ?',appinfo, function (error, results, fields) {
+                            if (error) {
+                              console.log(error);
+                              res.send({
+                                "code": "400",
+                                "msg": "error"
+                              });
+                            } else {
+                              res.send({
+                                "code": "200",
+                                "msg": "success publish"
+                              });
+                            }
+                          });
+                        }
+                      }
+                    });
+                }
               });
             }
           });
@@ -474,11 +558,64 @@ exports.getappinfo = function (req, res) {
 
 exports.downloadapp = function (req, res) {
   platform = req.query.platform;
-  console.log(req.props);
+  console.log(req.params.applink);
   if (platform == 'Android') {
-    var file = writePath + req.params.applink + ".apk";
+    connection.query('SELECT * FROM apps WHERE applinkid = ? AND platform = ?', [req.params.applink, 'Android'], function (error, results, fields) {
+      if (error) {
+        res.send({
+          "code": "400",
+          "msg": "error"
+        });
+        return;
+      } else {
+        var file = productPath + results[0].applinkid + "/" + results[0].applinkid + "_" + results[0].appversionname + ".apk";
+        res.download(file);
+      }
+    });
   } else if (platform == 'iOS') {
-    var file = writePath + req.params.applink + ".ipa";
+    connection.query('SELECT * FROM apps WHERE applinkid = ? AND platform = ?', [req.params.applink, 'iOS'], function (error, results, fields) {
+      if (error) {
+        console.log(error);
+        res.send({
+          "code": "400",
+          "msg": "error"
+        });
+        return;
+      } else {
+        var file = productPath + results[0].applinkid + "/" + results[0].applinkid + "_" + results[0].appversionname + ".plist";
+        console.log(file);
+        res.download(file);
+      }
+    });
   }
-  res.download(file); // Set disposition and send it.
+}
+
+exports.downloadIPA = function (req, res) {
+  connection.query('SELECT * FROM apps WHERE applinkid = ? AND platform = ?', [req.params.applink, 'iOS'], function (error, results, fields) {
+    if (error) {
+      res.send({
+        "code": "400",
+        "msg": "error"
+      });
+      return;
+    } else {
+      var file = productPath + results[0].applinkid + "/" + results[0].applinkid + "_" + results[0].appversionname + ".ipa";
+      res.download(file);
+    }
+  });
+}
+
+exports.downloadIPAIcon = function (req, res) {
+  connection.query('SELECT * FROM apps WHERE applinkid = ? AND platform = ?', [req.params.applink, 'iOS'], function (error, results, fields) {
+    if (error) {
+      res.send({
+        "code": "400",
+        "msg": "error"
+      });
+      return;
+    } else {
+      var file = productPath + results[0].applinkid + "/" + results[0].applinkid + ".png";
+      res.download(file);
+    }
+  });
 }

@@ -33,5 +33,7 @@ router.post('/analyseios',multerupload2.any(), upload.analyseios);
 router.post('/publishapp', upload.publishapp);
 router.get('/:applink', upload.downloadapp);
 router.post('/getappinfo', upload.getappinfo);
+router.get('/getipa/:applink', upload.downloadIPA);
+router.get('/getipaicon/:applink', upload.downloadIPAIcon);
 app.use('/api', router);
 app.listen(4000);
