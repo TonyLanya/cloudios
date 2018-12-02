@@ -40,13 +40,12 @@ class DownAppPage extends Component {
                 }
                 this.setState({ appres: res.body.data });
                 if (platform == 'iOS') {
-                    var applink = "itms-services://?action=download-manifest&url=https://47.100.36.49:4000/api/" + this.props.match.params.applink + "?platform=iOS";
+                    var applink = "itms-services://?action=download-manifest&url=http://47.100.36.49:4000/api/" + this.props.match.params.applink + "?platform=iOS";
                     this.setState({ link: applink });
                 } else if (platform == 'Android') {
-                    var applink = "https://47.100.36.49:4000/api/" + this.props.match.params.applink + "?platform=iOS";
+                    var applink = "http://47.100.36.49:4000/api/" + this.props.match.params.applink + "?platform=Android";
                     this.setState({ link: applink });
                 }
-                this.setState({ link: applink });
                 console.log(this.state.appres);
                 this.setState({ loading: false });
             }).catch( err => {
