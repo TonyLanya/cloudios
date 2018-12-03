@@ -124,9 +124,6 @@ class DownAppPage extends Component {
                                                 )}
                                             </div>
                                         )}
-                                        <div>
-                                            <a href="sdf">Download</a>
-                                        </div>
                                     </div>
                                     <h1 className="name">
                                         <span className="icon-wrap">
