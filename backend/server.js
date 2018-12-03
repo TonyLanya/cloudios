@@ -4,8 +4,8 @@ var upload = require('./routes/fileroutes');
 var bodyParser = require('body-parser');
 var fs = require("fs");
 var path = require("path");
-var https = require('https');
-var http = require('https');
+// var https = require('https');
+// var http = require('https');
 /*
 Module:multer
 multer is middleware used to handle multipart form data
@@ -13,10 +13,10 @@ multer is middleware used to handle multipart form data
 var multer = require('multer');
 var multerupload2 = multer({ dest: 'publishapp/' });
 var app = express();
-var sslOptions = {
-    key: fs.readFileSync('key.pem'),
-    cert: fs.readFileSync('cert.pem')
-};
+// var sslOptions = {
+//     key: fs.readFileSync('key.pem'),
+//     cert: fs.readFileSync('cert.pem')
+// };
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -46,5 +46,5 @@ router.get('/getipa/:applink', upload.downloadIPA);
 router.get('/getipaicon/:applink', upload.downloadIPAIcon);
 app.use('/api', router);
 app.listen(4000);
-https.createServer(sslOptions, app).listen(4400);
+// https.createServer(sslOptions, app).listen(4400);
 // http.createServer(app).listen(4000);

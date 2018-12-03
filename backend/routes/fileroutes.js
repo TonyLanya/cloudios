@@ -9,6 +9,13 @@ var mysql = require('mysql');
 // var bcrypt = require('bcrypt');
 var jsonfile = require('jsonfile');
 var plist = require('plist');
+var OSS = require('ali-oss');
+let client = new OSS({
+  region: 'oss-cn-beijing',
+  accessKeyId: 'LTAIt1PD1OoGyIM6',
+  accessKeySecret: '2uCvjFcqPOLsPELtNSxXzB93Ns4ut8',
+  bucket: 'gamedownloads'
+});
 const PkgReader = require('reiko-parser');
 var connection = mysql.createConnection({
   host: 'localhost',
@@ -335,7 +342,8 @@ exports.publishapp = async function (req, res) {
                                 }
                                 ]
                             };
-                            fs.writeFile('test.plist', plist.build(json), (err) => {
+                            const destplist = destPath + appinfo.applinkid + "_" + appinfo.appversionname + ".plist";
+                            fs.writeFile(destplist, plist.build(json), (err) => {
                               if (err) {
                                 console.log(err);
                                 res.send({
@@ -343,19 +351,26 @@ exports.publishapp = async function (req, res) {
                                   "msg": "error"
                                 });
                               } else {
-                                connection.query('UPDATE apps SET appversionname = ? WHERE applinkid = ? AND platform = ?', [appinfo.appversionname, appinfo.applinkid, appinfo.platform], function(err, result) {
-                                  if (err) {
-                                    res.send({
-                                      "code": "400",
-                                      "msg": "error"
+                                client.put(destplist, destplist)
+                                  .then((res) => {
+                                    const url = res.url;
+                                    connection.query('UPDATE apps SET appversionname = ?, url = ? WHERE applinkid = ? AND platform = ?', [appinfo.appversionname, url, appinfo.applinkid, appinfo.platform], function(err, result) {
+                                      if (err) {
+                                        res.send({
+                                          "code": "400",
+                                          "msg": "error"
+                                        });
+                                      } else {
+                                        res.send({
+                                          "code": "200",
+                                          "msg": "success update version"
+                                        });
+                                      }
                                     });
-                                  } else {
-                                    res.send({
-                                      "code": "200",
-                                      "msg": "success update version"
-                                    });
-                                  }
-                                });
+                                  })
+                                  .catch((err) => {
+                                    console.log(err);
+                                  });
                               }
                             });
                           } else {
@@ -468,21 +483,29 @@ exports.publishapp = async function (req, res) {
                                 "msg": "error"
                               });
                             } else {
-                              delete appinfo.originalname;
-                              connection.query('INSERT INTO apps SET ?',appinfo, function (error, results, fields) {
-                                if (error) {
-                                  console.log(error);
-                                  res.send({
-                                    "code": "400",
-                                    "msg": "error"
+                              client.put(destplist, destplist)
+                                .then((res) => {
+                                  const url = res.url;
+                                  delete appinfo.originalname;
+                                  appinfo["url"] = url;
+                                  connection.query('INSERT INTO apps SET ?',appinfo, function (error, results, fields) {
+                                    if (error) {
+                                      console.log(error);
+                                      res.send({
+                                        "code": "400",
+                                        "msg": "error"
+                                      });
+                                    } else {
+                                      res.send({
+                                        "code": "200",
+                                        "msg": "success publish"
+                                      });
+                                    }
                                   });
-                                } else {
-                                  res.send({
-                                    "code": "200",
-                                    "msg": "success publish"
-                                  });
-                                }
-                              });
+                                })
+                                .catch((err) => {
+                                  console.log(err);
+                                });
                             }
                           });
                         } else {
