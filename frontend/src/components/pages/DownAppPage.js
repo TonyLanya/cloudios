@@ -40,7 +40,11 @@ class DownAppPage extends Component {
                 }
                 this.setState({ appres: res.body.data });
                 if (platform.os.family == 'iOS') {
-                    var templink = "itms-services://?action=download-manifest&url=" + res.body.data[0].url;
+                    var tempurl = res.body.data[0].url;
+                    if (!tempurl.includes("https")) {
+                        tempurl = tempurl.replace("http", "https");
+                    }
+                    var templink = "itms-services://?action=download-manifest&url=" + tempurl;
                     this.setState({ link: templink });
                 } else if (platform.os.family == 'Android') {
                     var templink = "http://47.100.36.49:4000/api/" + this.props.match.params.applink + "?platform=Android";
