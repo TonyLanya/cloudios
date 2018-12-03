@@ -3,8 +3,8 @@ var mysql = require('mysql');
 var jsonfile = require('jsonfile');
 var connection = mysql.createConnection({
   host: 'localhost',
-  user: 'cloudios',
-  password: 'mycloudios123',
+  user: 'root',
+  password: '',
   database: 'cloudios',
   insecureAuth: true
 });

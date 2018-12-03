@@ -19,8 +19,8 @@ let client = new OSS({
 const PkgReader = require('reiko-parser');
 var connection = mysql.createConnection({
   host: 'localhost',
-  user: 'cloudios',
-  password: 'mycloudios123',
+  user: 'root',
+  password: '',
   database: 'cloudios',
   insecureAuth: true
 });
