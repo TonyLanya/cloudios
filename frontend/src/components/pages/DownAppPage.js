@@ -25,7 +25,6 @@ class DownAppPage extends Component {
     }
 
     componentDidMount() {
-        alert(platform.os.family);
         document.title = 'Adnroid & IOS store - Down APP';
         this.setState({ applink: this.props.match.params.applink });
         request
@@ -62,31 +61,6 @@ class DownAppPage extends Component {
         event.preventDefault();
         this.setState({ downloading: true});
         const url = `${global.baseUrl}${this.state.applink}?platform=${platform.os.family}`;
-        alert(url);
-        if (platform.os.family == 'Android') {
-            // const path = RNFS.DocumentDirectoryPath + '/' + this.props.match.params.applink + '.apk';
-        }
-        // if (platform.os.family == 'Android') {
-        //     const path = RNFS.DocumentDirectoryPath + '/' + this.props.match.params.applink + '.apk';
-        //     var download = RNFS.downloadFile({
-        //         fromUrl: url,
-        //         toFile: path,
-        //         progress: res => {
-        //             this.setState({ progress: (res.bytesWritten / res.contentLength).toFixed(2) });
-        //             console.log((res.bytesWritten / res.contentLength).toFixed(2));
-        //         },
-        //         progressDivider: 1
-        //     });
-        //     download.promise.then(result => {
-        //         if(result.statusCode == 200){
-        //             this.setState({ progress: null });
-        //             this.setState({ downloading: false });
-        //         } else {
-        //             this.setState({ downloading: false });
-        //         }
-        //     });
-        // }
-        // window.open(`${global.baseUrl}${this.state.applink}?platform=${platform.os.family}`, "_blank");
     }
 
     render() {
@@ -131,17 +105,28 @@ class DownAppPage extends Component {
                                         { (platform.os.family == 'Android') && (
                                             <div>
                                                 { this.state.link != '' && (
-                                                <a href={this.state.link}>Download</a>
+                                                <a href={this.state.link}>
+                                                <MuiThemeProvider>
+                                                    <RaisedButton label="Download" primary={true} style={style}/>
+                                                </MuiThemeProvider>
+                                                </a>
                                                 )}
                                             </div>
                                         )}
                                         { (platform.os.family == 'iOS') && (
                                             <div>
                                                 { this.state.link != '' && (
-                                                <a href={this.state.link}>Download</a>
+                                                <a href={this.state.link}>
+                                                <MuiThemeProvider>
+                                                    <RaisedButton label="Download" primary={true} style={style}/>
+                                                </MuiThemeProvider>
+                                                </a>
                                                 )}
                                             </div>
                                         )}
+                                        <div>
+                                            <a href="sdf">Download</a>
+                                        </div>
                                     </div>
                                     <h1 className="name">
                                         <span className="icon-wrap">
