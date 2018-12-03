@@ -352,8 +352,8 @@ exports.publishapp = async function (req, res) {
                                 });
                               } else {
                                 client.put(destplist, destplist)
-                                  .then((res) => {
-                                    const url = res.url;
+                                  .then((result) => {
+                                    const url = result.url;
                                     connection.query('UPDATE apps SET appversionname = ?, url = ? WHERE applinkid = ? AND platform = ?', [appinfo.appversionname, url, appinfo.applinkid, appinfo.platform], function(err, result) {
                                       if (err) {
                                         res.send({
@@ -484,8 +484,8 @@ exports.publishapp = async function (req, res) {
                               });
                             } else {
                               client.put(destplist, destplist)
-                                .then((res) => {
-                                  const url = res.url;
+                                .then((result) => {
+                                  const url = result.url;
                                   delete appinfo.originalname;
                                   appinfo["url"] = url;
                                   connection.query('INSERT INTO apps SET ?',appinfo, function (error, results, fields) {
