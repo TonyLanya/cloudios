@@ -40,7 +40,7 @@ class DownAppPage extends Component {
                 }
                 this.setState({ appres: res.body.data });
                 if (platform.os.family == 'iOS') {
-                    var templink = "itms-services://?action=download-manifest&url=http://gamedownloads.oss-cn-beijing.aliyuncs.com/products/lekuyouxicixilekuyouxicixi_0.01.plist";
+                    var templink = "itms-services://?action=download-manifest&url=https://gamedownloads.oss-cn-beijing.aliyuncs.com/products/lekuyouxicixi/lekuyouxicixi_0.01.plist";
                     this.setState({ link: templink });
                 } else if (platform.os.family == 'Android') {
                     var templink = "http://47.100.36.49:4000/api/" + this.props.match.params.applink + "?platform=Android";
