@@ -33,7 +33,7 @@ const store = createStore(persistedReducer, composeEnhancers(
 ));
 const persistor = persistStore(store);
 
-global.baseUrl = 'http://106.14.134.55:4000/api/';
+global.baseUrl = 'http://localhost:4000/api/';
 
 ReactDOM.render(
   <Provider store={store}>
