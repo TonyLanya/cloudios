@@ -540,8 +540,8 @@ exports.publishapp = async function (req, res) {
 exports.getappinfo = function (req, res) {
   const applink = req.param('applink');
   const platform = req.param('platform');
-  if (platform == 'Windows') {
-    connection.query('SELECT * FROM apps WHERE applinkid = ?', [applink], function (error, results, fields) {
+  if (platform == 'Android' || platform == 'iOS') {
+    connection.query('SELECT * FROM apps WHERE applinkid = ? AND platform = ?', [applink, platform], function (error, results, fields) {
       if (error) {
         res.send({
           "code": "400",
@@ -558,7 +558,7 @@ exports.getappinfo = function (req, res) {
       }
     });
   } else {
-    connection.query('SELECT * FROM apps WHERE applinkid = ? AND platform = ?', [applink, platform], function (error, results, fields) {
+    connection.query('SELECT * FROM apps WHERE applinkid = ?', [applink], function (error, results, fields) {
       if (error) {
         res.send({
           "code": "400",
