@@ -71,6 +71,10 @@ class MenuAppBar extends React.Component {
             <i className="fa fa-fw fa-star-o" style={{ fontSize: '1.7em' }}></i>
             <span>UPLOAD</span>
           </a>
+          <a href="/myapps" className="bm-item" style={{display: 'block', outline: 'none'}}>
+            <i className="fa fa-fw fa-star-o" style={{ fontSize: '1.7em' }}></i>
+            <span>MY APPS</span>
+          </a>
         </nav>
       </div>
     );

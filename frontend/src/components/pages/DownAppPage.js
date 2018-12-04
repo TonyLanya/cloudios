@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
-import NavNew from './NavNew';
 import loadingImage from '../../../public/images/loading.gif';
 import RaisedButton from 'material-ui/RaisedButton';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 var request = require('superagent');
 var QRCode = require('qrcode.react');
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-// import RNFS from 'react-native-fs';
 var platform = require('platform');
-var Axios = require('axios');
 
 class DownAppPage extends Component {
     constructor(props) {
@@ -55,12 +52,6 @@ class DownAppPage extends Component {
                 console.log(err);
                 this.props.history.push('/');
             });
-    }
-
-    handleClick = (event) => {
-        event.preventDefault();
-        this.setState({ downloading: true});
-        const url = `${global.baseUrl}${this.state.applink}?platform=${platform.os.family}`;
     }
 
     render() {

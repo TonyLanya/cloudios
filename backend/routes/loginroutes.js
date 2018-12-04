@@ -69,18 +69,19 @@ exports.login = function(req,res){
     // console.log('The solution is: ', results[0].password,req.body.password,req.body.role);
     if(results.length >0){
       if(results[0].password == password){
-        var file = './userdata/userid.json'
-        var obj = {email: req.body.email}
-        jsonfile.writeFile(file, obj, function (err) {
-          if(err){
-            console.log("Error ocurred in writing json during login at login handler in login routes",err);
-          }
-        })
         res.send({
           "code":200,
-          "success":"login sucessfull"
+          "success":"login sucessfull",
+          "data": results[0]
         });
-        return;
+        // var file = './userdata/userid.json'
+        // var obj = {email: req.body.email}
+        // jsonfile.writeFile(file, obj, function (err) {
+        //   if(err){
+        //     console.log("Error ocurred in writing json during login at login handler in login routes",err);
+        //   }
+        // })
+        // return;
 
       }
       else{

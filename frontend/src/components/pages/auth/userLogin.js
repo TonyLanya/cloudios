@@ -40,7 +40,7 @@ class userLogin extends Component {
         axios.post(apiBaseUrl+'login', payload)
         .then( response => {
             if ( response.data.success === 'login sucessfull' ) {
-                this.props.signSuccess();
+                this.props.signSuccess(response.data.data);
                 return this.props.history.push('/');
             } else {
                 // alert('failed');

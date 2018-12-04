@@ -16,7 +16,7 @@ import RequireAuth from './components/pages/auth/requireAuth';
 import UploadPage from './components/pages/UploadPage';
 import DownAppPage from './components/pages/DownAppPage';
 import SignUpPage from './components/pages/auth/SignUpPage';
-import reduxThunk from 'redux-thunk';
+import MyappsPage from './components/pages/MyappsPage';
 import reducers from "./reducers";
 
 const persistConfig = {
@@ -45,6 +45,7 @@ ReactDOM.render(
             <Route exact path='/signup' component={SignUpPage} />
             <Route exact path='/' component = {RequireAuth(HomePage)} />
             <Route exact path='/upload' component = {RequireAuth(UploadPage)} />
+            <Route exact path='/myapps' component = {RequireAuth(MyappsPage)} />
             <Route exact path='/:applink' component = {DownAppPage} />
           </Switch>
         </main>

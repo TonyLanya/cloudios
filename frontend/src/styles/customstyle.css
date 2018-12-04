@@ -42,6 +42,10 @@
     margin-top: 100px;
 }
 
+.app-content {
+    margin-top: 50px;
+}
+
 .selectRole {
     height: 100px;
     margin-bottom: 20px;
@@ -246,4 +250,33 @@ i {
 
 .app-brief {
     margin-top: 50px;
+}
+
+
+/* My APPS PAGE */
+
+.app-container {
+    width: 80%;
+    margin: auto;
+}
+
+.app-item {
+    width: 200px;
+    height: 200px;
+    display: inline-block;
+    padding-top: 20px;
+    cursor: pointer;
+}
+
+.app-item:hover {
+    background-color: #b8b7ad;
+}
+
+.app-item:active {
+    background-color: #8d8c84;
+}
+
+.app-header-title {
+    color:black;
+    font-size: 38px;
 }

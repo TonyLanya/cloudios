@@ -3,35 +3,19 @@ import {
     AUTH_IN_PROGRESS,
     UNAUTH_USER,
     AUTH_ERROR,
-    CLEARDOWN
+    CLEARDOWN,
+    SET_USER
   } from './authTypes';
   
   import Auth from './Auth';
   
   const auth = new Auth();
 
-  export function signSuccess() {
+  export function signSuccess(user) {
       return function(dispatch) {
           dispatch({ type: AUTH_USER });
+          dispatch({ type: SET_USER, user: user });
       }
-  }
-  
-  export function signinUser({ email, password }, callback) {
-  
-    return function (dispatch) {
-  
-      dispatch({ type: AUTH_IN_PROGRESS });
-  
-    //   auth.signin(email, password, callback)
-    //     .then(() => {
-    //       dispatch({ type: AUTH_USER });
-    //       return callback();
-    //     })
-    //     .catch((error) => {
-    //       const errorMsg = error.description || error.message || 'Unspecified error';
-    //       return dispatch(authError(errorMsg));
-    //     })
-    }
   }
   
   export function authError(error) {

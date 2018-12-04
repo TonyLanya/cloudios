@@ -17,8 +17,7 @@ export default class Auth {
         // var self = this;
         var payload={
         "userid":username,
-        "password":password,
-        "role":"student"
+        "password":password
         }
         axios.post(apiBaseUrl+'login', payload)
         .then(function (response) {

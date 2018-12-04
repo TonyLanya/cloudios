@@ -29,7 +29,6 @@ class UploadPage extends Component {
 
     componentWillMount() {
         document.title = 'Adnroid & IOS store - Upload';
-        // empty for now...
     }
 
     onSubmit = () => {
@@ -53,14 +52,24 @@ class UploadPage extends Component {
     Usage:This fxn is default event handler of react drop-Dropzone
     which is modified to update filesPreview div
     */
-    onDrop(acceptedFiles, rejectedFiles) {
+    onDrop(acceptedFiles) {
         this.setState({ loading: true, loadingmessage: 'please wait a moment...' });
-        if (this.state.role === 'Android') {
+        // if (this.state.role === 'Android') {
+        //     var req = request.post(`${global.baseUrl}analyseapk`);
+        // } else {
+        //     var req = request.post(`${global.baseUrl}analyseios`);
+        // }
+        acceptedFiles[0].email = this.props.email;
+        console.log(acceptedFiles);
+        if (acceptedFiles[0].type == 'application/x-itunes-ipa') {
+            var req = request.post(`${global.baseUrl}analyseios`);
+        } else if (acceptedFiles[0].type == 'application/vnd.android.package-archive') {
             var req = request.post(`${global.baseUrl}analyseapk`);
         } else {
-            var req = request.post(`${global.baseUrl}analyseios`);
+            alert("Please upload correct file");
+            window.location.reload();
         }
-        req.attach(acceptedFiles[0].name,acceptedFiles[0]);
+        req.attach(acceptedFiles[0].name,acceptedFiles[0]).field('email', this.props.email);
         req.end( (err,res) => {
             if(err){
                 this.setState({ loading: false, selected: true });
@@ -69,16 +78,18 @@ class UploadPage extends Component {
                 console.log(res.body.data);
                 if (res.body.msg == 'apk analyse sucessfully') {
                     this.setState({ appres: res.body.data });
-                    var bundleID = res.body.data.appid;
-                    bundleID = bundleID.replace("com.", "");
-                    bundleID = bundleID.replace(".", "");
+                    // var bundleID = res.body.data.appid;
+                    // bundleID = bundleID.replace("com.", "");
+                    // bundleID = bundleID.replace(".", "");
+                    var bundleID = res.body.data.applinkid;
                     this.setState({ applinkid: bundleID });
                     this.setState({ loading: false, selected: true });
                 } else if (res.body.msg == 'ipa analyse sucessfully') {
                     this.setState({ appres: res.body.data });
-                    var bundleID = res.body.data.appid;
-                    bundleID = bundleID.replace("com.", "");
-                    bundleID = bundleID.replace(".", "");
+                    // var bundleID = res.body.data.appid;
+                    // bundleID = bundleID.replace("com.", "");
+                    // bundleID = bundleID.replace(".", "");
+                    var bundleID = res.body.data.applinkid;
                     this.setState({ applinkid: bundleID });
                     this.setState({ loading: false, selected: true });
                 } else if (res.body.msg == 'cannot rename') {
@@ -86,10 +97,13 @@ class UploadPage extends Component {
                     window.location.reload();
                 } else if (res.body.msg == 'app already published') {
                     alert("app already published");
-                    var bundleId = res.body.bundleid;
+                    var bundleId = res.body.applinkid;
                     this.props.history.push('/' + bundleId);
                 } else if (res.body.msg == 'cannot remove old version') {
                     alert("Sorry cannnot update version right now. Try again later.");
+                    window.location.reload();
+                } else if (res.body.msg == 'Email not found') {
+                    alert("Please register with your email first");
                     window.location.reload();
                 } else {
                     alert("Please upload correct file");
@@ -105,28 +119,25 @@ class UploadPage extends Component {
 
     onPublish = () => {
         this.setState({ loading: true, loadingmessage: 'please wait a moment...' });
-        var postform = this.state.appres;
-        postform["applinkid"] = this.state.applinkid;
+        // var postform = this.state.appres;
+        // postform["applinkid"] = this.state.applinkid;
         request
             .post(`${global.baseUrl}publishapp`)
-            .send({ appinfo : postform })
+            .send({ appinfo : this.state.appres, email: this.props.email })
             .set('Accept', 'application/json')
             .then(res => {
-            //    alert('yay got ' + JSON.stringify(res.body));
-            //    this.setState({ loading: false, selected: false });
                 console.log(res);
-                this.props.history.push('/' + this.state.applinkid);
+                if (res.body.msg == 'success update version') {
+                    this.props.history.push('/' + this.state.applinkid);
+                } else if (res.body.msg == 'already updated') {
+                    this.props.history.push('/' + this.state.applinkid);
+                } else if (res.body.msg == 'success publish') {
+                    this.props.history.push('/' + this.state.applinkid);
+                } else {
+                    alert(res.body.msg);
+                    window.location.reload();
+                }
             });
-        // var req = request.post(`${global.baseUrl}publishapp`);
-        // req.end( (err,res) => {
-        //     if (err) {
-        //         console.log(err);
-        //         this.setState({ loading: false, selected: false });
-        //     } else {
-        //         console.log("res", res);
-        //         this.setState({ loading: false, selected: false });
-        //     }
-        // });
     }
 
     handleSelectRole = (event) => {
@@ -202,7 +213,7 @@ class UploadPage extends Component {
                                         <div className="appdetails">
                                             <div className="appmoredetails">
                                                 <span className="applinkurl">
-                                                    https://my.com/{ this.state.applinkid }
+                                                    http://localhost:3000/{ this.state.applinkid }
                                                 </span>
                                                 <span>
                                                     <span className="appcloudimage">
@@ -268,12 +279,14 @@ class UploadPage extends Component {
 
 function mapStateToProps(state) {
     const { error, timestamp, forgotMsg, loading, authenticated } = state.auth;
+    const email = state.user.email;
     return {
         error,
         timestamp,
         forgotMsg,
         loading,
-        authenticated
+        authenticated,
+        email
     };
 }
 
