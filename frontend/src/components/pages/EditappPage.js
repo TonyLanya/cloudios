@@ -82,7 +82,7 @@ class Editapppage extends Component {
                                 <div className="appdetails">
                                     <div className="appmoredetails">
                                         <span className="applinkurl">
-                                            http://localhost:3000/{ this.state.applinkid }
+                                            http://106.14.134.55:3000/{ this.state.applinkid }
                                         </span>
                                         <span>
                                             <span className="appcloudimage">

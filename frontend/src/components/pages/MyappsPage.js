@@ -73,7 +73,7 @@ class MyappsPage extends Component {
                                         short: 
                                         </div>
                                         <div className="app-detail-content" title={app.applinkid}>
-                                        http://localhost:3000/{app.applinkid}
+                                        http://106.14.134.55:3000/{app.applinkid}
                                         </div>
                                     </div>
                                     <div className="app-package">

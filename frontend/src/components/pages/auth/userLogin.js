@@ -10,7 +10,7 @@ import '../../../styles/customstyle.css';
 import NavNew from './../NavNew';
 import RaisedButton from 'material-ui/RaisedButton';
 
-var apiBaseUrl = "http://localhost:4000/api/";
+var apiBaseUrl = "http://106.14.134.55:4000/api/";
 
 class userLogin extends Component {
     constructor() {

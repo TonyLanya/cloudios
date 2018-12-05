@@ -127,7 +127,7 @@ class HomePage extends Component {
     }
 
     onCopyurl = (index) => {
-        this.copyToClipboard("http://localhost:3000/" + this.state.links[index].applinkid);
+        this.copyToClipboard("http://106.14.134.55:3000/" + this.state.links[index].applinkid);
         NotificationManager.success('链接复制完了', '成功');
     }
 
@@ -386,7 +386,7 @@ class HomePage extends Component {
                             </div>
                             <div className="newlink-box newlink-content">
                                 <div className="newlink-header">
-                                    http://localhost:3000/
+                                    http://106.14.134.55:3000/
                                 </div>
                                 <input type="text" onChange={e => this.checklink(e)} id='nlink' maxLength='4' />
                             </div>
@@ -420,7 +420,7 @@ class HomePage extends Component {
                                     <a href="#" className="close-thik" onClick={() => this.onRemove(index)}></a>
                                     <div className="app-link" onClick={() => this.onCopyurl(index)}>
                                         <p title="Click to copy">
-                                            http://localhost:3000/{link.applinkid}
+                                            http://106.14.134.55:3000/{link.applinkid}
                                         </p>
                                     </div>
                                     { link.Android.appid ? (

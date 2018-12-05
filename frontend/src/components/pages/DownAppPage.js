@@ -43,7 +43,7 @@ class DownAppPage extends Component {
                     var templink = "itms-services://?action=download-manifest&url=" + tempurl;
                     this.setState({ link: templink });
                 } else if (platform.os.family == 'Android') {
-                    var templink = "http://localhost:4000/api/" + this.props.match.params.applink + "?platform=Android";
+                    var templink = "http://106.14.134.55:4000/api/" + this.props.match.params.applink + "?platform=Android";
                     this.setState({ link: templink });
                 }
                 console.log(this.state.appres);
@@ -81,7 +81,7 @@ class DownAppPage extends Component {
                                             )}
                                         </div>
                                         <div>
-                                        <QRCode value={"http://localhost:3000/"+ this.state.applink}/>
+                                        <QRCode value={"http://106.14.134.55:3000/"+ this.state.applink}/>
                                         </div>
                                         {/* { (platform.os.family == 'Android') && (
                                             (this.state.downloading) ? (
@@ -124,7 +124,7 @@ class DownAppPage extends Component {
                                     <p className="scan-tips">
                                         Scan the qrcode to download
                                         <br/>
-                                        Open the url on your phone: http://localhost:3000/{this.state.applink}
+                                        Open the url on your phone: http://106.14.134.55:3000/{this.state.applink}
                                     </p>
                                     <div className="release-info">
                                         <p>

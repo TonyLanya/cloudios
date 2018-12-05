@@ -1,7 +1,7 @@
 
 import axios from 'axios';
 
-var apiBaseUrl = "http://localhost:4000/api/";
+var apiBaseUrl = "http://106.14.134.55:4000/api/";
 
 export default class Auth {
 
