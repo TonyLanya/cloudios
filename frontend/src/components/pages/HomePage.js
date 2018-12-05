@@ -210,6 +210,7 @@ class HomePage extends Component {
             }
         } else {
             if (selectorFiles[0].type == 'application/x-itunes-ipa') {
+                this.setState({ uploading: true, filename: selectorFiles[0].name });
                 this.setState({ uploading: true });
                 var req = request.post(`${global.baseUrl}analyseios`);
                 req.attach(selectorFiles[0].name,selectorFiles[0]).field({'email': this.props.email, 'applinkid': this.state.links[index].applinkid});
