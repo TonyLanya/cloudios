@@ -3,9 +3,10 @@ import NavNew from './NavNew';
 import { connect } from 'react-redux';
 import '../../styles/customstyle.css';
 import * as actions from '../../actions/auth';
+import 'font-awesome/css/font-awesome.min.css';
 var request = require('superagent');
 
-class HomePage extends Component {
+class MyappsPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -35,8 +36,12 @@ class HomePage extends Component {
         });
     }
 
-    onGotoItem = (index) => {
-        this.props.history.push('/' + this.state.apps[index].applinkid);
+    onGotoView = (index) => {
+        window.open('/' + this.state.apps[index].applinkid);
+    }
+
+    onGotoEdit = (index) => {
+        this.props.history.push('/myapps/' + this.state.apps[index].applinkid);
     }
 
     render() {
@@ -53,9 +58,9 @@ class HomePage extends Component {
                         <div className="app-container">
                         { this.state.apps && (
                             this.state.apps.map((app, index) => (
-                                <div className="app-item"  key={index} onClick={() => this.onGotoItem(index)}>
-                                    <div className="app-image">
-                                        <img width="50" src={app.appicon}/>
+                                <div className="app-item"  key={index}>
+                                    <div className="app-image" onClick={() => this.onGotoEdit(index)}>
+                                        <img width="80" src={app.appicon}/>
                                     </div>
                                     <div className="app-title">
                                         {app.appname}
@@ -63,9 +68,50 @@ class HomePage extends Component {
                                     <div className="app-platform">
                                         {app.platform}
                                     </div>
+                                    <div className="app-short">
+                                        <div className="app-detail-header">
+                                        short: 
+                                        </div>
+                                        <div className="app-detail-content" title={app.applinkid}>
+                                        http://localhost:3000/{app.applinkid}
+                                        </div>
+                                    </div>
+                                    <div className="app-package">
+                                        <div className="app-detail-header">
+                                        PackageName: 
+                                        </div>
+                                        <div className="app-detail-content" title={app.appid}>
+                                        {app.appid}
+                                        </div>
+                                    </div>
+                                    <div className="app-latest">
+                                        <div className="app-detail-header">
+                                        Lastest: 
+                                        </div>
+                                        <div className="app-detail-content">
+                                        {app.appversionname}{' ( Build '}{app.appversioncode}{' )'}
+                                        </div>
+                                    </div>
                                     <div className="app-created">
-                                        <p style={{ marginBottom: "0px" }}>Created Time</p>
-                                        <p style={{ margin: "0px", fontSize: "12px" }}>{app.created}</p>
+                                        <div className="app-detail-header">
+                                        CreatedTime: 
+                                        </div>
+                                        <div className="app-detail-content" title={app.created}>
+                                        {app.created}
+                                        </div>
+                                    </div>
+                                    <div className="app-action">
+                                    <div className="button" onClick={() => this.onGotoEdit(index)}>
+                                        <i className="fa fa-pencil" style={{ fontSize: '14px', marginRight: '3px' }}></i>
+                                        Edit
+                                    </div>
+                                    <div className="button" onClick={() => this.onGotoView(index)}>
+                                        <i className="fa fa-eye" style={{ fontSize: '14px', marginRight: '3px' }}></i>
+                                        Preview
+                                    </div>
+                                    {/* <div className="button">
+                                        <i className="fa fa-trash" style={{ fontSize: '14px', marginRight: '3px' }}></i>
+                                    </div> */}
                                     </div>
                                 </div>
                             ))
@@ -77,6 +123,10 @@ class HomePage extends Component {
         );
     }
 }
+
+const style = {
+    margin: 15,
+};
 
 function mapStateToProps(state) {
     const { error, timestamp, forgotMsg, loading, authenticated } = state.auth;
@@ -91,5 +141,4 @@ function mapStateToProps(state) {
     };
 }
 
-// export default HomePage;
-export default connect(mapStateToProps, actions)(HomePage);
+export default connect(mapStateToProps, actions)(MyappsPage);

@@ -258,18 +258,97 @@ i {
 .app-container {
     width: 80%;
     margin: auto;
+    text-align: left;
+}
+
+.app-link {
+    color: #a20b0b;
+    border: 1px solid #a20b0b;
+    display: inline-block;
+    border-radius: 7px;
+    margin-left: 11px;
+    padding: 3px 8px 3px 3px;
+    cursor: pointer;
+}
+
+.close-thik:after {
+    content: '✖'; /* UTF-8 symbol */
+}
+
+[class*='close-'] {
+    color: #777;
+    font: 16px/100% arial, sans-serif;
+    position: absolute;
+    right: 5px;
+    text-decoration: none;
+    text-shadow: 0 1px 0 #fff;
+    top: 5px;
+}
+
+.app-link p {
+    margin: 0px;
+    padding-left: 10px;
+}
+
+.app-android p,
+.app-ios p {
+    padding-left: 20px;
+    padding-top: 20px;
+}
+
+.app-android .container img,
+.app-ios .container img {
+    width: 55px;
+}
+.app-android .container .img,
+.app-ios .container .img {
+    width: 55px;
+    display: inline-block;
+}
+
+.app-android .container .detail,
+.app-ios .container .detail {
+    width: 175px;
+    height: 55px;
+    display: inline-block;
+    padding-left: 10px;
+}
+
+.app-android .container .detail p,
+.app-ios .container .detail p {
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+}
+
+.app-android .container,
+.app-ios .container {
+    text-align: left;
+    padding: 0 30px;
+    height: 60px;
 }
 
 .app-item {
-    width: 200px;
-    height: 200px;
+    position: relative;
+    width: 300px;
+    height: 350px;
     display: inline-block;
     padding-top: 20px;
+    background: #d4ce9c;
+    margin-right: 10px;
+    transition: all .25s;
+    border-radius: 20px;
+    border: 1px solid #927979;
+    margin-bottom: 10px;
+}
+
+.app-image {
     cursor: pointer;
 }
 
 .app-item:hover {
-    background-color: #b8b7ad;
+    transform: translateY(-4px);
+    box-shadow: 0 15px 30px rgba(0,0,0,.1);
 }
 
 .app-item:active {
@@ -279,4 +358,216 @@ i {
 .app-header-title {
     color:black;
     font-size: 38px;
+}
+
+.app-short {
+    margin-top: 13px;
+    font-size: 15px;
+}
+
+.app-package,
+.app-latest,
+.app-created {
+    margin-top: 6px;
+    font-size: 15px;
+}
+
+.app-detail-header {
+    display: inline-block;
+    width: 37%;
+    /* text-align: right; */
+    margin-right: 8px;
+    word-wrap: normal;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.app-detail-content {
+    display: inline-block;
+    width: 57%;
+    text-align: left;
+    word-wrap: normal;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.app-title,
+.app-image {
+    text-align: left;
+    padding-left: 40px;
+}
+
+.app-platform {
+    text-align: left;
+    padding-left: 40px;
+}
+
+.app-action {
+    margin-top: 25px;
+}
+
+.app-action .button {
+    display: inline-block;
+    border: 1px solid #9B9B9B;
+    padding: 10px;
+    margin-right: 9px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.app-action .button:hover,
+.app-action .button:hover i {
+    border-color: #f8ba0b;
+    color: #f8ba0b !important;
+}
+
+.app-android .fileUpload,
+.app-ios .fileUpload {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    margin: 10px;
+}
+
+.btn-success {
+    color: #fff;
+    background-color: #5cb85c;
+    border-color: #4cae4c;
+    transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,border 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+}
+
+.btn-success:hover {
+    color: #fff;
+    background-color: #388e3c;
+    border-color: #388e3c;
+}
+
+.btn {
+    display: inline-block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.app-android .fileUpload input.upload,
+.app-ios .fileUpload input.upload {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    filter: alpha(opacity=0);
+}
+
+.app-android .platform,
+.app-ios .platform {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.action-view {
+    text-align: right;
+    margin-right: 20px;
+    margin-top: 10px;
+}
+
+.action-view button {
+    border-radius: 20px;
+}
+
+.uploading-container,
+.newlink-container {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    display: table;
+    z-index: 9999;
+}
+
+.mid-Div {
+    display: table-cell;
+    vertical-align: middle;
+    background-color: #7d7d7d9e;
+}
+
+.uploading,
+.newlink {
+    margin: auto;
+    width: 400px;
+    height: 100px;
+    background: white;
+}
+
+.uploading-box,
+.newlink-box {
+    width: 100%;
+    height: 50px;
+    border-bottom: 1px solid black;
+    background-color: #3d4df5e3;
+    color: white;
+}
+
+.uploading-box p,
+.newlink-box p {
+    padding: 0 20px;
+    line-height: 50px;
+}
+
+.react-sweet-progress {
+    height: 100%;
+}
+
+.uploading-progress {
+    background: white;
+    border: 0px solid;
+}
+
+.newlink-content {
+    background: white;
+    border: 0px solid;
+}
+
+.newlink-header {
+    color: black;
+    display: inline-block;
+    height: 100%;
+    line-height: 50px;
+    margin-left: 20px;
+}
+
+.app-header-title {
+    margin-bottom: 10px;
+}
+
+.app-newlink {
+    margin-bottom: 20px;
+}
+
+.newlink-action {
+    background-color: #524cc500;
+    border: 0px;
+}
+
+.newlink {
+    position: relative;
 }

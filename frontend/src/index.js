@@ -17,6 +17,7 @@ import UploadPage from './components/pages/UploadPage';
 import DownAppPage from './components/pages/DownAppPage';
 import SignUpPage from './components/pages/auth/SignUpPage';
 import MyappsPage from './components/pages/MyappsPage';
+import EditappPage from './components/pages/EditappPage';
 import reducers from "./reducers";
 
 const persistConfig = {
@@ -46,6 +47,7 @@ ReactDOM.render(
             <Route exact path='/' component = {RequireAuth(HomePage)} />
             <Route exact path='/upload' component = {RequireAuth(UploadPage)} />
             <Route exact path='/myapps' component = {RequireAuth(MyappsPage)} />
+            <Route exact path='/myapps/:applink' component = {RequireAuth(EditappPage)} />
             <Route exact path='/:applink' component = {DownAppPage} />
           </Switch>
         </main>

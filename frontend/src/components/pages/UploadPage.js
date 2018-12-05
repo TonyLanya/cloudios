@@ -8,6 +8,8 @@ import Dropzone from 'react-dropzone';
 import FontIcon from 'material-ui/FontIcon';
 import {blue500, red500, greenA200} from 'material-ui/styles/colors';
 import loadingImage from '../../../public/images/loading.gif';
+import CircularProgressbar from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 var request = require('superagent');
 const PkgReader = require('reiko-parser');
 
@@ -24,6 +26,7 @@ class UploadPage extends Component {
             appres: null,
             applinkid: '',
             role: 'Android',
+            percent: 0,
         }
     }
 
@@ -53,64 +56,71 @@ class UploadPage extends Component {
     which is modified to update filesPreview div
     */
     onDrop(acceptedFiles) {
-        this.setState({ loading: true, loadingmessage: 'please wait a moment...' });
-        // if (this.state.role === 'Android') {
+        // this.setState({ loading: true, loadingmessage: 'please wait a moment...' });
+        console.log(acceptedFiles);
+        const currentFile = acceptedFiles[0];
+        const myFileItemReader = new FileReader();
+        myFileItemReader.addEventListener("load", () => {
+            console.log(myFileItemReader.result);
+        }, false);
+        myFileItemReader.readAsDataURL(currentFile);
+        // acceptedFiles[0].email = this.props.email;
+        // console.log(acceptedFiles);
+        // if (acceptedFiles[0].type == 'application/x-itunes-ipa') {
+        //     var req = request.post(`${global.baseUrl}analyseios`);
+        // } else if (acceptedFiles[0].type == 'application/vnd.android.package-archive') {
         //     var req = request.post(`${global.baseUrl}analyseapk`);
         // } else {
-        //     var req = request.post(`${global.baseUrl}analyseios`);
+        //     alert("Please upload correct file");
+        //     window.location.reload();
         // }
-        acceptedFiles[0].email = this.props.email;
-        console.log(acceptedFiles);
-        if (acceptedFiles[0].type == 'application/x-itunes-ipa') {
-            var req = request.post(`${global.baseUrl}analyseios`);
-        } else if (acceptedFiles[0].type == 'application/vnd.android.package-archive') {
-            var req = request.post(`${global.baseUrl}analyseapk`);
-        } else {
-            alert("Please upload correct file");
-            window.location.reload();
-        }
-        req.attach(acceptedFiles[0].name,acceptedFiles[0]).field('email', this.props.email);
-        req.end( (err,res) => {
-            if(err){
-                this.setState({ loading: false, selected: true });
-            } else {
-                console.log(res.body);
-                console.log(res.body.data);
-                if (res.body.msg == 'apk analyse sucessfully') {
-                    this.setState({ appres: res.body.data });
-                    // var bundleID = res.body.data.appid;
-                    // bundleID = bundleID.replace("com.", "");
-                    // bundleID = bundleID.replace(".", "");
-                    var bundleID = res.body.data.applinkid;
-                    this.setState({ applinkid: bundleID });
-                    this.setState({ loading: false, selected: true });
-                } else if (res.body.msg == 'ipa analyse sucessfully') {
-                    this.setState({ appres: res.body.data });
-                    // var bundleID = res.body.data.appid;
-                    // bundleID = bundleID.replace("com.", "");
-                    // bundleID = bundleID.replace(".", "");
-                    var bundleID = res.body.data.applinkid;
-                    this.setState({ applinkid: bundleID });
-                    this.setState({ loading: false, selected: true });
-                } else if (res.body.msg == 'cannot rename') {
-                    alert("Sorry unexpected error");
-                    window.location.reload();
-                } else if (res.body.msg == 'app already published') {
-                    alert("app already published");
-                    var bundleId = res.body.applinkid;
-                    this.props.history.push('/' + bundleId);
-                } else if (res.body.msg == 'cannot remove old version') {
-                    alert("Sorry cannnot update version right now. Try again later.");
-                    window.location.reload();
-                } else if (res.body.msg == 'Email not found') {
-                    alert("Please register with your email first");
-                    window.location.reload();
-                } else {
-                    alert("Please upload correct file");
-                    window.location.reload();
-                }
-            }
-        });
+        // req.attach(acceptedFiles[0].name,acceptedFiles[0]).field('email', this.props.email);
+        // req.on('progress', function(e) {
+        //     console.log('Progress', e.percent);
+        //     this.setState({percent: e.percent.toFixed(0)});
+        //   }.bind(this));
+        // req.end( (err,res) => {
+        //     if(err){
+        //         this.setState({ loading: false, selected: true });
+        //     } else {
+        //         console.log(res.body);
+        //         console.log(res.body.data);
+        //         if (res.body.msg == 'apk analyse sucessfully') {
+        //             this.setState({ appres: res.body.data });
+        //             // var bundleID = res.body.data.appid;
+        //             // bundleID = bundleID.replace("com.", "");
+        //             // bundleID = bundleID.replace(".", "");
+        //             var bundleID = res.body.data.applinkid;
+        //             this.setState({ applinkid: bundleID });
+        //             this.setState({ loading: false, selected: true });
+        //         } else if (res.body.msg == 'ipa analyse sucessfully') {
+        //             this.setState({ appres: res.body.data });
+        //             // var bundleID = res.body.data.appid;
+        //             // bundleID = bundleID.replace("com.", "");
+        //             // bundleID = bundleID.replace(".", "");
+        //             var bundleID = res.body.data.applinkid;
+        //             this.setState({ applinkid: bundleID });
+        //             this.setState({ loading: false, selected: true });
+        //         } else if (res.body.msg == 'cannot rename') {
+        //             alert("Sorry unexpected error");
+        //             window.location.reload();
+        //         } else if (res.body.msg == 'app already published') {
+        //             alert("app already published");
+        //             // var bundleId = res.body.applinkid;
+        //             // this.props.history.push('/' + bundleId);
+        //             this.props.history.push('/myapps');
+        //         } else if (res.body.msg == 'cannot remove old version') {
+        //             alert("Sorry cannnot update version right now. Try again later.");
+        //             window.location.reload();
+        //         } else if (res.body.msg == 'Email not found') {
+        //             alert("Please register with your email first");
+        //             window.location.reload();
+        //         } else {
+        //             alert("Please upload correct file");
+        //             window.location.reload();
+        //         }
+        //     }
+        // });
     }
 
     getminVersion = () => {
@@ -128,11 +138,14 @@ class UploadPage extends Component {
             .then(res => {
                 console.log(res);
                 if (res.body.msg == 'success update version') {
-                    this.props.history.push('/' + this.state.applinkid);
+                    // this.props.history.push('/' + this.state.applinkid);
+                    this.props.history.push('/myapps');
                 } else if (res.body.msg == 'already updated') {
-                    this.props.history.push('/' + this.state.applinkid);
+                    // this.props.history.push('/' + this.state.applinkid);
+                    this.props.history.push('/myapps');
                 } else if (res.body.msg == 'success publish') {
-                    this.props.history.push('/' + this.state.applinkid);
+                    // this.props.history.push('/' + this.state.applinkid);
+                    this.props.history.push('/myapps');
                 } else {
                     alert(res.body.msg);
                     window.location.reload();
@@ -166,7 +179,13 @@ class UploadPage extends Component {
                         <div>
                             { this.state.loadingmessage }
                         </div>
-                        <img src={loadingImage}/>
+                        {/* <img src={loadingImage}/> */}
+                        <div style={{ width: "30%", margin: "auto" }}>
+                            <CircularProgressbar
+                                percentage={this.state.percent}
+                                text={`${this.state.percent}%`}
+                            />
+                        </div>
                     </div>
                 ) : (
                     <div>

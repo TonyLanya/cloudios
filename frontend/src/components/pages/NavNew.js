@@ -95,11 +95,11 @@ class MenuAppBar extends React.Component {
         >
           <AppBar position="static">
             <Toolbar>
-              {this.props.authenticated && (
+              {/* {this.props.authenticated && (
                 <IconButton style={{ marginLeft: '-12', marginRight: '20' }} color="inherit" aria-label="Menu" onClick={() => this.onSetSidebarOpen(true)}>
                   <MenuIcon/>
                 </IconButton>
-              )}
+              )} */}
               <Typography variant="h6" color="inherit" style={{ textAlign: 'center', flexGrow: '1' }}>
                 ANDROID & IOS STORE
               </Typography>
