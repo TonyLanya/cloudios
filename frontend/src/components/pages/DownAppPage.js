@@ -43,7 +43,7 @@ class DownAppPage extends Component {
                     var templink = "itms-services://?action=download-manifest&url=" + tempurl;
                     this.setState({ link: templink });
                 } else if (platform.os.family == 'Android') {
-                    var templink = "http://106.14.134.55:4000/" + this.props.email + "/" + this.props.match.params.applink + "/" + this.props.match.params.applink + "_" +res.body.data[0].appversionname + ".apk";
+                    var templink = "http://106.14.134.55:4000/" + res.body.data[0].email + "/" + this.props.match.params.applink + "/" + this.props.match.params.applink + "_" +res.body.data[0].appversionname + ".apk";
                     this.setState({ link: templink });
                 }
                 console.log(this.state.appres);
