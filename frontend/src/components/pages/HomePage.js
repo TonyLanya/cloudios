@@ -39,6 +39,7 @@ class HomePage extends Component {
             validCreate: false,
             nlink: '',
             error: '',
+            tlink: '',
         };
         this.checklink = debounce(this.onCheck, 250);
     }
@@ -286,70 +287,108 @@ class HomePage extends Component {
         }
     }
 
+    
+
+    makeid = () => {
+        var text = "";
+        var possibletext = "abcdefghijklmnopqrstuvwxyz";
+        var possibledigit = "0123456789";
+    
+        for (var i = 0; i < 4; i++) {
+            if ( i % 2 == 1) {
+                text += possibledigit.charAt(Math.floor(Math.random() * possibledigit.length));
+            } else {
+                text += possibletext.charAt(Math.floor(Math.random() * possibletext.length));
+            }
+        }
+    
+        return text;
+    }
+
     onNewlink = () => {
-        this.setState({ newlink: true });
+        // var nlink = document.getElementById('nlink').value;
+        this.setState({ newlink: true, tlink: this.makeid() });
+        request
+        .post(`${global.baseUrl}checklink`)
+        .send({ link : this.state.tlink })
+        .set('Accept', 'application/json')
+        .then(res => {
+            console.log(res);
+            if (res.body.msg == 'available') {
+                this.setState({ validCreate: true });
+            } else if (res.body.msg == 'not available') {
+                this.setState({ validCreate: false, error: 'already exists' });
+            } else {
+                this.setState({ validCreate: false });
+            }
+        });
     }
 
     onCreatelink = () => {
-        var nlink = document.getElementById('nlink').value;
-        if (nlink.length != 4) {
-            this.setState({ validCreate: false, error: 'input 4 characters' });
-        } else {
-            request
-            .post(`${global.baseUrl}createlink`)
-            .send({ link : nlink, email: this.props.email })
-            .set('Accept', 'application/json')
-            .then(res => {
-                console.log(res);
-                if (res.body.msg == 'success') {
-                    this.setState({ validCreate: false, newlink: false });
-                    NotificationManager.success('New link created', 'Success');
-                    request
-                    .post(`${global.baseUrl}getlinks`)
-                    .send({ email : this.props.email })
-                    .set('Accept', 'application/json')
-                    .then(res => {
-                        console.log(res.body);
-                        this.setState({ loading: false, links: res.body.res });
-                    }).catch( err => {
-                        console.log(err);
-                        // this.props.history.push('/');
-                    });
-                } else if (res.body.msg == 'not available') {
-                    this.setState({ validCreate: false, error: 'already exists' });
-                } else {
-                    this.setState({ validCreate: false });
-                }
-            });
-            this.setState({ validCreate: false });
-        }
+        // var nlink = document.getElementById('nlink').value;
+        // if (nlink.length != 4) {
+        //     this.setState({ validCreate: false, error: 'input 4 characters' });
+        // } else {
+        request
+        .post(`${global.baseUrl}createlink`)
+        .send({ link : this.state.tlink, email: this.props.email })
+        .set('Accept', 'application/json')
+        .then(res => {
+            console.log(res);
+            if (res.body.msg == 'success') {
+                this.setState({ validCreate: false, newlink: false });
+                NotificationManager.success('New link created', 'Success');
+                request
+                .post(`${global.baseUrl}getlinks`)
+                .send({ email : this.props.email })
+                .set('Accept', 'application/json')
+                .then(res => {
+                    console.log(res.body);
+                    this.setState({ loading: false, links: res.body.res });
+                }).catch( err => {
+                    console.log(err);
+                    // this.props.history.push('/');
+                });
+            } else if (res.body.msg == 'not available') {
+                this.setState({ validCreate: false, error: 'already exists' });
+            } else {
+                this.setState({ validCreate: false });
+            }
+        });
+        this.setState({ validCreate: false });
+        // }
     }
 
     onCloselink = () => {
         this.setState({ newlink: false });
     }
 
+    bindChange = (e) => {
+        this.setState({ tlink: e.target.value });
+        this.checklink(e);
+    }
+
     onCheck = () => {
         this.setState({ error: '' });
-        var nlink = document.getElementById('nlink').value;
-        if (nlink.length != 4) {
-            this.setState({ validCreate: false, error: 'input 4 characters' });
-        } else {
-            request
-            .post(`${global.baseUrl}checklink`)
-            .send({ link : nlink, email: this.props.email })
-            .set('Accept', 'application/json')
-            .then(res => {
-                console.log(res);
-                if (res.body.msg == 'available') {
-                    this.setState({ validCreate: true });
-                } else if (res.body.msg == 'not available') {
-                    this.setState({ validCreate: false, error: 'already exists' });
-                } else {
-                    this.setState({ validCreate: false });
-                }
-            });
-        }
+        // var nlink = document.getElementById('nlink').value;
+        // if (nlink.length != 4) {
+        //     this.setState({ validCreate: false, error: 'input 4 characters' });
+        // } else {
+        request
+        .post(`${global.baseUrl}checklink`)
+        .send({ link : this.state.tlink })
+        .set('Accept', 'application/json')
+        .then(res => {
+            console.log(res);
+            if (res.body.msg == 'available') {
+                this.setState({ validCreate: true });
+            } else if (res.body.msg == 'not available') {
+                this.setState({ validCreate: false, error: 'already exists' });
+            } else {
+                this.setState({ validCreate: false });
+            }
+        });
+        // }
     }
 
     render() {
@@ -389,7 +428,7 @@ class HomePage extends Component {
                                 <div className="newlink-header">
                                     http://106.14.134.55:3000/
                                 </div>
-                                <input type="text" onChange={e => this.checklink(e)} id='nlink' maxLength='4' />
+                                <input type="text" onChange={e => this.bindChange(e)} id='nlink' value={this.state.tlink} />
                             </div>
                             <div className="newlink-box newlink-action">
                                 <MuiThemeProvider theme={theme}>

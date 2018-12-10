@@ -554,8 +554,7 @@ exports.removelink = async function (req, res) {
 
 exports.checklink = function (req, res) {
   var applinkid = req.param('link');
-  var email = req.param('email');
-  connection.query('SELECT * FROM links WHERE applinkid = ? AND email = ?', [applinkid, email], (err, results) => {
+  connection.query('SELECT * FROM links WHERE applinkid = ?', [applinkid], (err, results) => {
     if (err) {
       console.log(err);
       res.send({
@@ -581,7 +580,7 @@ exports.checklink = function (req, res) {
 exports.createlink = function (req, res) {
   var applinkid = req.param('link');
   var email = req.param('email');
-  connection.query('SELECT * FROM links WHERE applinkid = ? AND email = ?', [applinkid, email], (err, results) => {
+  connection.query('SELECT * FROM links WHERE applinkid = ?', [applinkid], (err, results) => {
     if (err) {
       console.log(err);
       res.send({
